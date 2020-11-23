@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 
 def score_albumin(albumin):
@@ -99,7 +100,6 @@ def score_age(age):
         return np.nan
         # raise Exception('age field missing', age)
 
-
 def score_ethnicity(ethnicity):
     if ethnicity in ['European', 'NZ European']:
         return 0
@@ -147,6 +147,36 @@ def score_timefrom_frtt(months):
         return np.nan
         # raise Exception('time from first rrt out of range', months)
 
-
 def adjust_transplantation():
     return -26
+
+def calculate(numeric_results_df):
+    bmi_series = calc_bmi(height=numeric_results_df['Height'], weight=numeric_results_df['Weight'])
+    # numeric_results_df[['COPD','Nonambulatory','CHF','Insulin','CAD','PVD','CVD','HT','SmokerCurrent','Employed']]
+    history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT', 'SmokerCurrent', 'Employed']
+    months_to_accepted = (numeric_results_df['dateAccepted'] - numeric_results_df['dateFirstRRT']) / np.timedelta64(1,
+                                                                                                                    'M')
+    months_to_referal = (numeric_results_df['dateReferredtoTxCtr'] - numeric_results_df[
+        'dateFirstRRT']) / np.timedelta64(1, 'M')
+
+    # merge the two datasets and if both exist, select months_to_accepted
+    months_to_listing = months_to_accepted.combine_first(months_to_referal)
+
+    scored_df = pd.DataFrame()
+    scored_df['Albumin'] = numeric_results_df['Albumin'].apply(score_albumin)
+    scored_df['bmis'] = bmi_series.apply(score_bmi)
+    scored_df['Cause'] = numeric_results_df['Cause'].apply(score_cause)
+    for history in history_list:
+        scored_df[history] = numeric_results_df[history].apply(score_history, args=(history,))
+
+    scored_df['Age'] = numeric_results_df['Age'].apply(score_age)
+    scored_df['EthnicGroup'] = numeric_results_df['EthnicGroup'].apply(score_ethnicity)
+    scored_df['yearFirstRRT'] = numeric_results_df['dateFirstRRT'].dt.year.apply(score_first_rrt)
+    scored_df['timeFromFirstRTT'] = months_to_listing.apply(score_timefrom_frtt)
+    scored_df['transplantation'] = -26
+
+    scored_df['test_Survival_Factor'] = scored_df.sum(axis=1)
+    scored_df['calc_Survival_Factor'] = numeric_results_df['Survival_Factor']
+    scored_df['diff_Survival_Factor'] = scored_df['test_Survival_Factor'] - scored_df['calc_Survival_Factor']
+
+    return scored_df

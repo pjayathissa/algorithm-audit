@@ -1,4 +1,4 @@
-import Calculator_RenalTransplant as cal
+import calculator_renal_transplant as cal
 import numpy as np
 import pandas as pd
 
@@ -7,7 +7,7 @@ import pandas as pd
 
 #function to create the audit report
 def validation(numeric_results_df):
-    return calculate_score(validate_bmi(numeric_results_df))
+    return validate_score(validate_bmi(numeric_results_df))
 
 #function to add comments to the dataset
 def add_comment(existing_comment,additional_comment):
@@ -23,8 +23,8 @@ def validate_bmi(numeric_results_df):
     validation_report=numeric_results_df.copy()
     validation_report['comments']=' '
     # validation_report.loc['comments']= validation_report['comments'].apply(lambda x: add_comment(x,'incorrect bmi calculation'))
-    validation_report.loc[validation_report[bmi_series - validation_report['bmis'] > 0],'comments']=\
-        validation_report[validation_report[bmi_series - validation_report['bmis'] > 0]].comments.apply(lambda x: add_comment(x,'incorrect bmi calculation'))
+    validation_report.loc[bmi_series - validation_report['bmis'] > 0,'comments']=\
+        validation_report[bmi_series - validation_report['bmis'] > 0].comments.apply(lambda x: add_comment(x,'incorrect bmi calculation'))
 
     # bmi_series[bmi_series - numeric_results_df['bmis'] > 0]
     #finding out of bound bmi calculations
@@ -39,44 +39,15 @@ def validate_bmi(numeric_results_df):
 
     return validation_report
 
-def calculate_score(numeric_results_df):
-    bmi_series = cal.calc_bmi(height=numeric_results_df['Height'], weight=numeric_results_df['Weight'])
-    # numeric_results_df[['COPD','Nonambulatory','CHF','Insulin','CAD','PVD','CVD','HT','SmokerCurrent','Employed']]
-    history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT', 'SmokerCurrent', 'Employed']
-    months_to_accepted = (numeric_results_df['dateAccepted'] - numeric_results_df['dateFirstRRT']) / np.timedelta64(1,
-                                                                                                                    'M')
-    months_to_referal = (numeric_results_df['dateReferredtoTxCtr'] - numeric_results_df[
-        'dateFirstRRT']) / np.timedelta64(1, 'M')
 
-    # merge the two datasets and if both exist, select months_to_accepted
-    months_to_listing = months_to_accepted.combine_first(months_to_referal)
-
-    scored_df = pd.DataFrame()
-    scored_df['Albumin'] = numeric_results_df['Albumin'].apply(cal.score_albumin)
-    scored_df['bmis'] = bmi_series.apply(cal.score_bmi)
-    scored_df['Cause'] = numeric_results_df['Cause'].apply(cal.score_cause)
-    for history in history_list:
-        scored_df[history] = numeric_results_df[history].apply(cal.score_history, args=(history,))
-
-    scored_df['Age'] = numeric_results_df['Age'].apply(cal.score_age)
-    scored_df['EthnicGroup'] = numeric_results_df['EthnicGroup'].apply(cal.score_ethnicity)
-    scored_df['yearFirstRRT'] = numeric_results_df['dateFirstRRT'].dt.year.apply(cal.score_first_rrt)
-    scored_df['timeFromFirstRTT'] = months_to_listing.apply(cal.score_timefrom_frtt)
-    scored_df['transplantation'] = -26
-
-    scored_df['test_Survival_Factor'] = scored_df.sum(axis=1)
-    scored_df['calc_Survival_Factor'] = numeric_results_df['Survival_Factor']
-    scored_df['diff_Survival_Factor'] = scored_df['test_Survival_Factor'] - scored_df['calc_Survival_Factor']
-
-    numeric_results_df['test_Survival_Factor'] = scored_df['test_Survival_Factor']
-    numeric_results_df['diff_Survival_Factor'] = scored_df['diff_Survival_Factor']
-
-    return validate_score(numeric_results_df,scored_df)
 
 #function to validate the score
-def validate_score(numeric_results_df,scored_df):
+def validate_score(numeric_results_df):
+    scored_df=cal.calculate(numeric_results_df)
     # validation_report=numeric_results_df.copy()
     # add comments to paitents with incorrect calculations
+    numeric_results_df['test_Survival_Factor'] = scored_df['test_Survival_Factor']
+    numeric_results_df['diff_Survival_Factor'] = scored_df['diff_Survival_Factor']
     numeric_results_df.loc[numeric_results_df['test_Survival_Factor'] - numeric_results_df['Survival_Factor'] != 0,
                        'comments']=numeric_results_df[numeric_results_df['test_Survival_Factor'] - numeric_results_df['Survival_Factor'] != 0].\
         comments.apply(lambda x: add_comment(x,'These patients have incorrect calculations'))
