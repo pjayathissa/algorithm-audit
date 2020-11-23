@@ -25,7 +25,7 @@ print(dataframe.head())
 
 
 
-print( val.validation(dataframe).comments)
+print( val.validation(dataframe).comments[0])
 
 
 #     #add exception handeling for null values
