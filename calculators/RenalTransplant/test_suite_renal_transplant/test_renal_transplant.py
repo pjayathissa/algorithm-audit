@@ -25,9 +25,7 @@ print(dataframe.head())
 
 
 
-print( val.validation(dataframe).comments[0])
-
-
+print( val.validation(dataframe))
 #     #add exception handeling for null values
 # print(cal.calc_bmi(height=dataframe['Height'], weight=dataframe['Weight']))
 #
