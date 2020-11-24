@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def score_albumin(albumin):
-    if albumin < 25:  ############ end cases not accounted for yet like 0 or negative
+    if albumin < 25:  # end cases not accounted for yet like 0 or negative
         return 9
     elif 25 <= albumin < 28:
         return 7
@@ -15,22 +15,24 @@ def score_albumin(albumin):
         return 4
     elif 40 <= albumin <= 41:  # to be consistent with the calculator
         return 3
-    elif 41 <= albumin:  ############################ equal not needed.
+    elif 41 <= albumin:  # equal not needed.
         return 0
     else:
         return np.nan
-        # raise Exception("issue with calc_albumin defnintion for value", albumin)
+    # raise Exception("issue with calc_albumin defnintion for value", albumin)
 
-#function to calculate bmi
+
+# function to calculate bmi
 def calc_bmi(height, weight):
     bmi = weight / ((height / 100.0) ** 2)
     return round(bmi, 2)
 
-#function to calculate score due to bmi
+
+# function to calculate score due to bmi
 def score_bmi(bmi):
-    if bmi <= 20.4:  ############strict less than
+    if bmi <= 20.4:  # strict less than
         return 1
-    elif 20.4 < bmi <= 25.0:  ##############should be equal here
+    elif 20.4 < bmi <= 25.0:  # should be equal here
         return 0
     elif 25.0 < bmi <= 35.7:
         return -1
@@ -40,7 +42,8 @@ def score_bmi(bmi):
         return np.nan
         # raise Exception('issue with score_bmi for value', bmi)
 
-#function to calculate score due to different causes
+
+# function to calculate score due to different causes
 def score_cause(cause):
     causes_dict = {'Diabetes': 3,
                    'Hypertension': -1,
@@ -53,7 +56,8 @@ def score_cause(cause):
         # print('causes', cause, 'not in dictionary')
         return np.nan
 
-#function to calculate score due to history
+
+# function to calculate score due to history
 def score_history(result, diagnosis):
     history_dict = {'COPD': 3,
                     'Nonambulatory': 3,
@@ -72,9 +76,10 @@ def score_history(result, diagnosis):
         return 0
     else:
         return np.nan
-        # raise Excpetion('history field missing for', diagnosis, 'value of', result)
+    # raise Excpetion('history field missing for',diagnosis,'value of',result)
 
-#function to calculate score due to age
+
+# function to calculate score due to age
 def score_age(age):
     if age < 31:
         return 0
@@ -98,18 +103,21 @@ def score_age(age):
         return 28
     else:
         return np.nan
-        # raise Exception('age field missing', age)
+    # raise Exception('age field missing', age)
 
+
+# function to define Ethnicity score
 def score_ethnicity(ethnicity):
     if ethnicity in ['European', 'NZ European']:
         return 0
-    elif ethnicity in ['Pacific Islander', 'Asian', 'Maori', 'Other']:  ############depends on data but not always -4
-        return -4
+    elif ethnicity in ['Pacific Islander', 'Asian', 'Maori', 'Other']:
+        return -4  # depends on data but not always -4
     else:
         return np.nan
-        # raise Exception('Ethnicity Missing')
+    # raise Exception('Ethnicity Missing')
 
 
+# score for
 def score_first_rrt(year):
     if year > 2001:
         return 1
@@ -117,9 +125,10 @@ def score_first_rrt(year):
         return 0
     else:
         return np.nan
-        # raise Exception('year of first RRT missing')
+    # raise Exception('year of first RRT missing')
 
 
+# score for
 def score_timefrom_frtt(months):
     if months < 0.1:
         return 0
@@ -145,17 +154,22 @@ def score_timefrom_frtt(months):
         return 15
     else:
         return np.nan
-        # raise Exception('time from first rrt out of range', months)
+    # raise Exception('time from first rrt out of range', months)
+
 
 def adjust_transplantation():
     return -26
 
+
+# main calculate function
 def calculate(numeric_results_df):
-    bmi_series = calc_bmi(height=numeric_results_df['Height'], weight=numeric_results_df['Weight'])
+    bmi_series = calc_bmi(height=numeric_results_df['Height'],
+                          weight=numeric_results_df['Weight'])
     # numeric_results_df[['COPD','Nonambulatory','CHF','Insulin','CAD','PVD','CVD','HT','SmokerCurrent','Employed']]
-    history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT', 'SmokerCurrent', 'Employed']
-    months_to_accepted = (numeric_results_df['dateAccepted'] - numeric_results_df['dateFirstRRT']) / np.timedelta64(1,
-                                                                                                                    'M')
+    history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT',
+                    'SmokerCurrent', 'Employed']
+    months_to_accepted = (numeric_results_df['dateAccepted'] - numeric_results_df[
+        'dateFirstRRT']) / np.timedelta64(1, 'M')
     months_to_referal = (numeric_results_df['dateReferredtoTxCtr'] - numeric_results_df[
         'dateFirstRRT']) / np.timedelta64(1, 'M')
 
