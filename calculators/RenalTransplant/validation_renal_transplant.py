@@ -6,7 +6,7 @@ def validation(numeric_results_df):
     return validate_score(validate_bmi(numeric_results_df))
 
 
-# function to add comments to the dataset
+# function to add comments to the data set
 def update_report(existing_comment, additional_comment):
     if existing_comment != ' ':
         return existing_comment+' and '+additional_comment
