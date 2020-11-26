@@ -130,9 +130,9 @@ def score_first_rrt(year):
 
 # score for
 def score_timefrom_frtt(months):
-    if months < 0.1:
+    if months <= 0.1:
         return 0
-    elif 0.1 < months <= 0.5:
+    elif 0.1 < months <= 0.5: # what happens at 0.1
         return 6
     elif 0.5 < months <= 3.7:
         return 7
@@ -157,40 +157,96 @@ def score_timefrom_frtt(months):
     # raise Exception('time from first rrt out of range', months)
 
 
-def adjust_transplantation():
-    return -26
-
-
 # main calculate function
-def calculate(numeric_results_df):
-    bmi_series = calc_bmi(height=numeric_results_df['Height'],
-                          weight=numeric_results_df['Weight'])
-    # numeric_results_df[['COPD','Nonambulatory','CHF','Insulin','CAD','PVD','CVD','HT','SmokerCurrent','Employed']]
+def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_txCtr, albumin, bmis, cause,
+              age, ethinic_group, copd, nonambulatory, chf, insulin, cad, pvd, cvd,
+              ht, smoker_current, employed):
+    renal_score=0
+    bmi=calc_bmi(height,weight)
     history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT',
                     'SmokerCurrent', 'Employed']
-    months_to_accepted = (numeric_results_df['dateAccepted'] - numeric_results_df[
-        'dateFirstRRT']) / np.timedelta64(1, 'M')
-    months_to_referal = (numeric_results_df['dateReferredtoTxCtr'] - numeric_results_df[
-        'dateFirstRRT']) / np.timedelta64(1, 'M')
-
+    history = [copd, nonambulatory, chf, insulin, cad, pvd, cvd, ht, smoker_current, employed]
+    months_to_accepted = (date_accepted - date_first_rrt) / np.timedelta64(1, 'M')
+    months_to_referal = (date_referred_to_txCtr - date_first_rrt) / np.timedelta64(1, 'M')
     # merge the two datasets and if both exist, select months_to_accepted
     months_to_listing = months_to_accepted.combine_first(months_to_referal)
+    renal_score = score_albumin(albumin) + score_bmi(bmi) + score_cause(cause) + score_age(age) +\
+                  score_ethnicity(ethinic_group) + score_first_rrt(date_first_rrt.dt.year) +\
+                  score_timefrom_frtt(months_to_listing) - 26
+    for i, history_diagnosis in enumerate(history):
+        renal_score += score_history(history_diagnosis, history_list[i])
 
-    scored_df = pd.DataFrame()
-    scored_df['Albumin'] = numeric_results_df['Albumin'].apply(score_albumin)
-    scored_df['bmis'] = bmi_series.apply(score_bmi)
-    scored_df['Cause'] = numeric_results_df['Cause'].apply(score_cause)
-    for history in history_list:
-        scored_df[history] = numeric_results_df[history].apply(score_history, args=(history,))
+    return renal_score
 
-    scored_df['Age'] = numeric_results_df['Age'].apply(score_age)
-    scored_df['EthnicGroup'] = numeric_results_df['EthnicGroup'].apply(score_ethnicity)
-    scored_df['yearFirstRRT'] = numeric_results_df['dateFirstRRT'].dt.year.apply(score_first_rrt)
-    scored_df['timeFromFirstRTT'] = months_to_listing.apply(score_timefrom_frtt)
-    scored_df['transplantation'] = -26
+# def calculate(numeric_results_df):
+#     bmi_series = calc_bmi(height=numeric_results_df['Height'],
+#                           weight=numeric_results_df['Weight'])
+#     # numeric_results_df[['COPD','Nonambulatory','CHF','Insulin','CAD','PVD','CVD','HT','SmokerCurrent','Employed']]
+#     history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT',
+#                     'SmokerCurrent', 'Employed']
+#     months_to_accepted = (numeric_results_df['dateAccepted'] - numeric_results_df[
+#         'dateFirstRRT']) / np.timedelta64(1, 'M')
+#     months_to_referal = (numeric_results_df['dateReferredtoTxCtr'] - numeric_results_df[
+#         'dateFirstRRT']) / np.timedelta64(1, 'M')
+#
+#     # merge the two datasets and if both exist, select months_to_accepted
+#     months_to_listing = months_to_accepted.combine_first(months_to_referal)
+#
+#     scored_df = pd.DataFrame()
+#     scored_df['Albumin'] = numeric_results_df['Albumin'].apply(score_albumin)
+#     scored_df['bmis'] = bmi_series.apply(score_bmi)
+#     scored_df['Cause'] = numeric_results_df['Cause'].apply(score_cause)
+#     for history in history_list:
+#         scored_df[history] = numeric_results_df[history].apply(score_history, args=(history,))
+#
+#     scored_df['Age'] = numeric_results_df['Age'].apply(score_age)
+#     scored_df['EthnicGroup'] = numeric_results_df['EthnicGroup'].apply(score_ethnicity)
+#     scored_df['yearFirstRRT'] = numeric_results_df['dateFirstRRT'].dt.year.apply(score_first_rrt)
+#     scored_df['timeFromFirstRTT'] = months_to_listing.apply(score_timefrom_frtt)
+#     scored_df['transplantation'] = -26
+#
+#     scored_df['test_Survival_Factor'] = scored_df.sum(axis=1)
+#     scored_df['calc_Survival_Factor'] = numeric_results_df['Survival_Factor']
+#     scored_df['diff_Survival_Factor'] = scored_df['test_Survival_Factor'] - scored_df['calc_Survival_Factor']
+#
+#     return scored_df
 
-    scored_df['test_Survival_Factor'] = scored_df.sum(axis=1)
-    scored_df['calc_Survival_Factor'] = numeric_results_df['Survival_Factor']
-    scored_df['diff_Survival_Factor'] = scored_df['test_Survival_Factor'] - scored_df['calc_Survival_Factor']
 
-    return scored_df
+
+    # def adjust_transplantation():
+    #     return -26
+
+    # def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_txCtr, albumin, bmis, cause,
+#               age, ethinic_group, copd, nonambulatory, chf, insulin, cad, pvd, cvd,
+#               ht, smoker_current, employed):
+#     renal_score=0
+#     bmi=calc_bmi(height,weight)
+#     history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT',
+#                     'SmokerCurrent', 'Employed']
+#     history = [copd, nonambulatory, chf, insulin, cad, pvd, cvd,
+#               ht, smoker_current, employed]
+#     months_to_accepted = (date_accepted - date_first_rrt) / np.timedelta64(1, 'M')
+#     months_to_referal = (date_referred_to_txCtr - date_first_rrt) / np.timedelta64(1, 'M')
+#     # merge the two datasets and if both exist, select months_to_accepted
+#     months_to_listing = months_to_accepted.combine_first(months_to_referal)
+#     scores_df = pd.DataFrame()
+#     scores_df['albumin_score'] = albumin.apply(score_albumin)
+#     scores_df['bmis_score'] = bmi_series.apply(score_bmi)
+#     scores_df['cause_score'] = cause.apply(score_cause)
+#     scores_df['age_score'] = age.apply(score_age)
+#     scores_df['ethinic_group_score']=ethinic_group.apply(score_ethnicity)
+#     year_first_rrt_score = date_first_rrt.dt.year.apply(score_first_rrt)
+#     time_from_first_rtt_score = months_to_listing.apply(score_timefrom_frtt)
+#     tranplantaion_score = -26
+#     history_score=[]
+#     for i, history_diagnosis in enumerate(history):
+#         history_score.append(history_diagnosis.apply(lambda x: score_history(history_list[i])))
+#
+
+
+
+
+
+
+
+
