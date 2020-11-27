@@ -158,11 +158,11 @@ def score_timefrom_frtt(months):
 
 
 # main calculate function
-def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_txCtr, albumin, bmis, cause,
+def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_txCtr, albumin, cause,
               age, ethinic_group, copd, nonambulatory, chf, insulin, cad, pvd, cvd,
               ht, smoker_current, employed):
-    renal_score=0
-    bmi=calc_bmi(height,weight)
+    renal_score = 0
+    bmi = calc_bmi(height,weight)
     history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT',
                     'SmokerCurrent', 'Employed']
     history = [copd, nonambulatory, chf, insulin, cad, pvd, cvd, ht, smoker_current, employed]
@@ -177,6 +177,7 @@ def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_tx
         renal_score += score_history(history_diagnosis, history_list[i])
 
     return renal_score
+
 
 # def calculate(numeric_results_df):
 #     bmi_series = calc_bmi(height=numeric_results_df['Height'],
@@ -241,12 +242,3 @@ def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_tx
 #     history_score=[]
 #     for i, history_diagnosis in enumerate(history):
 #         history_score.append(history_diagnosis.apply(lambda x: score_history(history_list[i])))
-#
-
-
-
-
-
-
-
-
