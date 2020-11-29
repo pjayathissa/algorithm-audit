@@ -5,7 +5,7 @@ import pandas as pd
 # main function to fetch the data and clean it
 def fetch_data():
     conn = create_connection()
-    result_df = query_data('sql_scripts_lgA.sql', conn)
+    result_df = query_data('sql_scripts_IgA.sql', conn)
     return clean_data(result_df)
 
 
