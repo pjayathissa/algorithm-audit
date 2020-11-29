@@ -24,12 +24,11 @@ def validation(numeric_results_df):
                                 chf=x['CHF'], insulin=x['Insulin'], cad=x['CAD'], pvd=x['PVD'], cvd=x['CVD'],
                                 ht=x['HT'], smoker_current=x['SmokerCurrent'], employed=x['Employed']))
 
-    result_df_renal['result'] = result_df_renal.apply(lambda x: validate(x['Column Name'], x['Survival_Factor'],
-                                                                         x['audit value']))
+    result_df_renal['Result'] = result_df_renal.apply(lambda x: validate(x['Column Name'], x['Survival_Factor'],
+                                                                         x['Audit Value']))
 
-    return pd.concat([result_df_renal.dropna(subset ='result'), result_df_bmi.dropna(subset ='result')])
-
-
+    validation_report = pd.concat([result_df_renal, result_df_bmi])
+    return validation_report.dropna(subset='Result')
 
 
 def validate(target_column ,acutal_value, audit_value):
