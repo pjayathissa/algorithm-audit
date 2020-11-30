@@ -162,7 +162,7 @@ def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_tx
               age, ethinic_group, copd, nonambulatory, chf, insulin, cad, pvd, cvd,
               ht, smoker_current, employed):
     renal_score = 0
-    bmi = calc_bmi(height,weight)
+    bmi = calc_bmi(height, weight)
     history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT',
                     'SmokerCurrent', 'Employed']
     history = [copd, nonambulatory, chf, insulin, cad, pvd, cvd, ht, smoker_current, employed]
