@@ -6,4 +6,6 @@ def renal_transplant():
     datafile = fd.fetch_data()
     return val.validation(datafile)
 
-# add exception handeling for null values
+
+# add exception handling for null values
+print(renal_transplant())
