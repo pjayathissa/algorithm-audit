@@ -23,7 +23,8 @@ jobs:
           python_version: ${{ matrix.python-version }}
           project_path: .
           ignore_failure: true
-
+       - name: Checkout PyTorch
+         uses: actions/checkout@master
        - name: Security check report artifacts
          uses: actions/upload-artifact@v1
       # if: failure()
