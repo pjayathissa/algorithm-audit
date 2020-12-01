@@ -5,7 +5,7 @@ on:
     branches: 
       - udit-dev-branch
     paths:
-      - '*.py'
+      - '**.py'
 
 jobs:
   flake8_py3:
