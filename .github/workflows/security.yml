@@ -9,15 +9,13 @@ jobs:
   bandit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 #get fuller history
-      - name: Run Bandit Report
-        uses: libertyy/py3-bandit-check@v1
-      - name: Save Bandit txt Report
-      - name: Security check report artifacts
-        uses: actions/upload-artifact@v1
+       - name: checkout repo
+         uses: actions/checkout@v2
+       - name: Run Bandit Report
+         uses: libertyy/py3-bandit-check@v1
+       - name: Security check report artifacts
+         uses: actions/upload-artifact@v1
       # if: failure()
-        with:
+         with:
           name: Security report
           path: output/security_report.txt
