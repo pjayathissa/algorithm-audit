@@ -1,6 +1,4 @@
 import math
-# start 10.15 am
-# finish 11.24 am
 
 
 def calculate(egfr, systoic_bp, diastoic_bp, proteinuria, mesangial, endocapillary_hypercellilarity,

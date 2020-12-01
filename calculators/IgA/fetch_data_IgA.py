@@ -31,4 +31,5 @@ def query_data(filename, conn):
 
 # function to clean the data
 def clean_data(result_df):
-     return 0
+
+    return 0

@@ -1,7 +1,7 @@
-import pytest
-import calculator_IgA as cal
-import validation_IgA as val
-import fetch_data_IgA as fd
+# import pytest
+# import calculator_IgA as cal
+# import validation_IgA as val
+# import fetch_data_IgA as fd
 
 
 class TestCalculator:

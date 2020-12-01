@@ -172,9 +172,8 @@ def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_tx
         months_to_listing = months_to_accepted
     else:
         months_to_listing = months_to_referal
-    renal_score = score_albumin(albumin) + score_bmi(bmi) + score_cause(cause) + score_age(age) + \
-                  score_ethnicity(ethinic_group) + score_first_rrt(date_first_rrt.year) + \
-                  score_time_from_frtt(months_to_listing) - 26
+    renal_score = score_albumin(albumin) + score_bmi(bmi) + score_cause(cause) + score_age(age) + score_ethnicity(
+        ethinic_group) + score_first_rrt(date_first_rrt.year) + score_time_from_frtt(months_to_listing) - 26
     for i, history_diagnosis in enumerate(history):
         renal_score += score_history(history_diagnosis, history_list[i])
 

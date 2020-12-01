@@ -5,7 +5,8 @@ import pandas as pd
 # main function to fetch the data and clean it
 def fetch_data():
     conn = create_connection()
-    result_df = query_data('sql_scripts_dvt.sql', conn)
+    result_df = query_data('sql_scripts_demo.sql', conn)
+
     return clean_data(result_df)
 
 
@@ -17,6 +18,8 @@ def create_connection():
                           'Trusted_Connection=yes;')
 
     return conn
+
+
 # create a close connection function
 
 
@@ -31,5 +34,4 @@ def query_data(filename, conn):
 
 # function to clean the data
 def clean_data(result_df):
-
     return 0
