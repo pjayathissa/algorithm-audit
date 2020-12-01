@@ -22,7 +22,7 @@ jobs:
          uses: jpetrucciani/bandit-check@master
          with:
           python_version: ${{ matrix.python-version }}
-          args: '--skips=test_*.py'
+          input_args: '--skips=test_*.py'
           project_path: .
           ignore_failure: true
        - name: Security check report artifacts
