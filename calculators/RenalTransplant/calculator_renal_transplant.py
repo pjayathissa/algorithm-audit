@@ -2,6 +2,29 @@ import numpy as np
 import math
 
 
+# main calculate function
+def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_txCtr, albumin, cause,
+              age, ethinic_group, copd, nonambulatory, chf, insulin, cad, pvd, cvd,
+              ht, smoker_current, employed):
+    renal_score = 0
+    bmi = calc_bmi(height, weight)
+    history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT',
+                    'SmokerCurrent', 'Employed']
+    history = [copd, nonambulatory, chf, insulin, cad, pvd, cvd, ht, smoker_current, employed]
+    months_to_accepted = (date_accepted - date_first_rrt) / np.timedelta64(1, 'M')
+    months_to_referal = (date_referred_to_txCtr - date_first_rrt) / np.timedelta64(1, 'M')
+    if(math.isnan(months_to_accepted)):
+        months_to_listing = months_to_accepted
+    else:
+        months_to_listing = months_to_referal
+    renal_score = score_albumin(albumin) + score_bmi(bmi) + score_cause(cause) + score_age(age) + score_ethnicity(
+        ethinic_group) + score_first_rrt(date_first_rrt.year) + score_time_from_frtt(months_to_listing) - 26
+    for i, history_diagnosis in enumerate(history):
+        renal_score += score_history(history_diagnosis, history_list[i])
+
+    return renal_score
+
+
 def score_albumin(albumin):
     if albumin < 25:  # end cases not accounted for yet like 0 or negative
         return 9
@@ -155,26 +178,3 @@ def score_time_from_frtt(months):
     else:
         return np.nan
     # raise Exception('time from first rrt out of range', months)
-
-
-# main calculate function
-def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_txCtr, albumin, cause,
-              age, ethinic_group, copd, nonambulatory, chf, insulin, cad, pvd, cvd,
-              ht, smoker_current, employed):
-    renal_score = 0
-    bmi = calc_bmi(height, weight)
-    history_list = ['COPD', 'Nonambulatory', 'CHF', 'Insulin', 'CAD', 'PVD', 'CVD', 'HT',
-                    'SmokerCurrent', 'Employed']
-    history = [copd, nonambulatory, chf, insulin, cad, pvd, cvd, ht, smoker_current, employed]
-    months_to_accepted = (date_accepted - date_first_rrt) / np.timedelta64(1, 'M')
-    months_to_referal = (date_referred_to_txCtr - date_first_rrt) / np.timedelta64(1, 'M')
-    if(math.isnan(months_to_accepted)):
-        months_to_listing = months_to_accepted
-    else:
-        months_to_listing = months_to_referal
-    renal_score = score_albumin(albumin) + score_bmi(bmi) + score_cause(cause) + score_age(age) + score_ethnicity(
-        ethinic_group) + score_first_rrt(date_first_rrt.year) + score_time_from_frtt(months_to_listing) - 26
-    for i, history_diagnosis in enumerate(history):
-        renal_score += score_history(history_diagnosis, history_list[i])
-
-    return renal_score
