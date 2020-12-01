@@ -6,28 +6,18 @@ on:
 
 
 jobs:
-  build:
+  bandit:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ ubuntu-latest]
-        python-version: [ '3.7.9' ]
-    name: Python ${{ matrix.python-version }} ${{ matrix.os }} 
-
     steps:
-       - name: Checkout repository
-         uses: actions/checkout@v2
-
-       - name: Security check - Bandit
-         uses: jpetrucciani/bandit-check@master
-         with:
-          python_version: ${{ matrix.python-version }}
-          input_args: '--skips=test_*.py'
-          project_path: .
-          ignore_failure: true
-       - name: Security check report artifacts
-         uses: actions/upload-artifact@v1
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 #get fuller history
+      - name: Run Bandit Report
+        uses: libertyy/py3-bandit-check@v1
+      - name: Save Bandit txt Report
+      - name: Security check report artifacts
+        uses: actions/upload-artifact@v1
       # if: failure()
-         with:
+        with:
           name: Security report
           path: output/security_report.txt
