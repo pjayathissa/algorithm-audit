@@ -19,7 +19,7 @@ jobs:
          uses: actions/checkout@v2
 
        - name: Security check - Bandit
-         uses: .
+         uses: jpetrucciani/bandit-check@master
          with:
           python_version: ${{ matrix.python-version }}
           project_path: .
