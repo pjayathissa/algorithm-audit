@@ -1,2 +1,0 @@
-[bandit]
-pytest_filter: test_* # excludes B101 in files matching test_*
