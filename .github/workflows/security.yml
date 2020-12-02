@@ -11,8 +11,10 @@ jobs:
     steps:
        - name: checkout repo
          uses: actions/checkout@v2
+       - name: Install bandit
+         run: pip install bandit
        - name: Run Bandit Report
-         uses: libertyy/py3-bandit-check@v1
+         uses: bandit -r calculators --skip=B101
        - name: Security check report artifacts
          uses: actions/upload-artifact@v1
       # if: failure()
