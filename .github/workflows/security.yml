@@ -1,0 +1,29 @@
+name: Security check - Bandit
+
+on:
+   push:
+     branches: 
+        - udit-dev-branch
+        - main
+
+
+jobs:
+  bandit:
+    runs-on: ubuntu-latest
+    steps:
+       - name: Setup Python
+         uses: actions/setup-python@v1
+         with:
+          python-version: 3.7.9
+       - name: checkout repo
+         uses: actions/checkout@v2
+       - name: Install bandit
+         run: pip install bandit
+       - name: Run Bandit Report
+         run: bandit -r ./ --skip=B101
+       - name: Security check report artifacts
+         uses: actions/upload-artifact@v1
+      # if: failure()
+         with:
+          name: Security report
+          path: output/security_report.txt
