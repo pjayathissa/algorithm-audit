@@ -18,7 +18,7 @@ jobs:
        - name: Install bandit
          run: pip install bandit
        - name: Run Bandit Report
-         run: bandit -r calculators --skip=B101
+         run: bandit -r ./ --skip=B101
        - name: Security check report artifacts
          uses: actions/upload-artifact@v1
       # if: failure()
