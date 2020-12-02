@@ -9,6 +9,10 @@ jobs:
   bandit:
     runs-on: ubuntu-latest
     steps:
+       - name: Setup Python
+         uses: actions/setup-python@v1
+         with:
+          python-version: 3.7.9
        - name: checkout repo
          uses: actions/checkout@v2
        - name: Install bandit
