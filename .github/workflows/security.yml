@@ -2,7 +2,9 @@ name: Security check - Bandit
 
 on:
    push:
-     branches: udit-dev-branch
+     branches: 
+        - udit-dev-branch
+        - main
 
 
 jobs:
