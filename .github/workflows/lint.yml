@@ -4,6 +4,7 @@ on:
   push:
     branches: 
       - udit-dev-branch
+      - main 
 
 jobs:
   flake8_py3:
