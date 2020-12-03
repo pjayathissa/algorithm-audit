@@ -8,7 +8,8 @@ def validation(numeric_results_df):
     validation_report = []
     # call calculate function
     # call check column function
-    return validation_report
+    validation_report = pd.concat(validation_report)
+    return validation_report.dropna(subset=['Result'])
 
 
 # function to create the validation data frame
