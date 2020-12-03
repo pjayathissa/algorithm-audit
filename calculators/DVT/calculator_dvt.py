@@ -49,6 +49,3 @@ def score_dvt_func(active_cancer, paralysis, recent_bedridden, localized_tendern
         score -= 2
 
     return score
-
-
-
