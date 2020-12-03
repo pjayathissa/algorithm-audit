@@ -1,5 +1,5 @@
-import fetch_data_demo as fd
-import validation_demo as val
+import fetch_data_dvt as fd
+import validation_dvt as val
 
 
 def renal_transplant():

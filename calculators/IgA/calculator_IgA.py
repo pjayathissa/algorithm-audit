@@ -9,7 +9,7 @@ def calculate(egfr, systoic_bp, diastoic_bp, proteinuria, mesangial, endocapilla
     risk_year_1 = predict_risk(12, liner_pred)
     risk_year_3 = predict_risk(36, liner_pred)
     risk_year_5 = predict_risk(60, liner_pred)
-    return [risk_year_1, risk_year_3, risk_year_5]
+    return risk_year_1, risk_year_3, risk_year_5
 
 
 def linear_predictor(egfr, map, proteinuria, mesangial, endocapillary_hypercellilarity,
