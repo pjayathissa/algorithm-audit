@@ -1,18 +1,16 @@
-import numpy as np
-
-
 # main function to calculate whether treatment is required or not
 def calculate(active_cancer, paralysis, recent_bedridden, localized_tenderness, swelling_of_leg, calf_swelling,
               pitting_edema, collateral_superficial_veins, previous_dvt, alternate_diagnosis):
     score = score_dvt_func(active_cancer, paralysis, recent_bedridden, localized_tenderness, swelling_of_leg,
                            calf_swelling, pitting_edema, collateral_superficial_veins, previous_dvt, alternate_diagnosis
                            )
-    if score >= 2:
-        return 1
-    elif score < 2:
-        return 0
-    else:
-        return np.nan  # return error or null
+    return score
+    # if score >= 2:
+    #     return 1
+    # elif score < 2:
+    #     return 0
+    # else:
+    #     return np.nan  # return error or null
 
 
 # function to score dvt
