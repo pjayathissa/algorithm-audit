@@ -8,4 +8,4 @@ def renal_transplant():
 
 
 # add exception handling for null values
-print(renal_transplant())
+renal_transplant().to_csv('Renal_Transplant_Audit_Report.csv')

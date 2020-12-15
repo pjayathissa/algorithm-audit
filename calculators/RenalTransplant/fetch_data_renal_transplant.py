@@ -1,5 +1,6 @@
 import pyodbc
 import pandas as pd
+import numpy as np
 
 
 # main function to fetch the data and clean it
@@ -41,16 +42,18 @@ def query_data(filename, conn):
 def clean_data(result_df):
     numeric_results_df = result_df.copy()
 
-    numeric_cols = ['Age', 'Albumin', 'bmis', 'Height', 'Weight', 'Survival_Factor']
+    numeric_cols = ['Age', 'Albumin', 'bmis', 'Height', 'Weight', 'Survival_Factor', 'Survival_Probability_at_5yrs']
     numeric_results_df[numeric_cols] = numeric_results_df[numeric_cols].apply(pd.to_numeric, downcast='float',
                                                                               errors='ignore')
     numeric_results_df['dateAccepted'] = pd.to_datetime(numeric_results_df['DateAccepted'], dayfirst=True)
     numeric_results_df['dateFirstRRT'] = pd.to_datetime(numeric_results_df['DateFirstRRT'], dayfirst=True)
     numeric_results_df['dateReferredtoTxCtr'] = pd.to_datetime(numeric_results_df['DateReferredtoTxCtr'], dayfirst=True)
     numeric_results_df.drop(['Survival_Probability_at_1yr', 'Survival_Probability_at_3yrs',
-                             'Survival_Probability_at_5yrs', 'taskrequest_id', 'observation_report_id',
+                             'taskrequest_id', 'observation_report_id',
                              'stream_id', 'referralencounter', 'patient_programme_id',
                              'display_name'], axis=1, inplace=True)
     numeric_results_df.drop(['DateAccepted', 'DateFirstRRT', 'DateReferredtoTxCtr'], axis=1, inplace=True)
+    numeric_results_df['Survival_Probability_at_5yrs'] =\
+        numeric_results_df['Survival_Probability_at_5yrs'].fillna(np.nan)
 
     return numeric_results_df

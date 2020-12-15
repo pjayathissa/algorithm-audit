@@ -26,6 +26,109 @@ def calculate(height, weight, date_accepted, date_first_rrt, date_referred_to_tx
     return renal_score
 
 
+# function to calculate 5 year survival score
+def mortality_score_at_5yrs(renal_score):
+    mortality_risk = {
+        -47: 0.3,
+        -46: 0.3,
+        -45: 0.3,
+        -44: 0.4,
+        -43: 0.4,
+        -42: 0.4,
+        -41: 0.5,
+        -40: 0.5,
+        -39: 0.6,
+        -38: 0.6,
+        -37: 0.7,
+        -36: 0.7,
+        -35: 0.8,
+        -34: 0.8,
+        -33: 0.9,
+        -32: 1,
+        -31: 1.1,
+        -30: 1.2,
+        -29: 1.3,
+        -28: 1.4,
+        -27: 1.5,
+        -26: 1.6,
+        -25: 1.8,
+        -24: 1.9,
+        -23: 2.1,
+        -22: 2.3,
+        -21: 2.5,
+        -20: 2.7,
+        -19: 2.9,
+        -18: 3.2,
+        -17: 3.4,
+        -16: 3.7,
+        -15: 4,
+        -14: 4.4,
+        -13: 4.8,
+        -12: 5.2,
+        -11: 5.6,
+        -10: 6.1,
+        -9: 6.6,
+        -8: 7.1,
+        -7: 7.7,
+        -6: 8.4,
+        -5: 9.1,
+        -4: 9.8,
+        -3: 10.6,
+        -2: 11.5,
+        -1: 12.4,
+        0: 13.4,
+        1: 14.5,
+        2: 15.7,
+        3: 16.9,
+        4: 18.2,
+        5: 19.6,
+        6: 21.2,
+        7: 22.8,
+        8: 24.5,
+        9: 26.3,
+        10: 28.2,
+        11: 30.3,
+        12: 32.4,
+        13: 34.7,
+        14: 37.1,
+        15: 39.5,
+        16: 42.1,
+        17: 44.8,
+        18: 47.6,
+        19: 50.4,
+        20: 53.4,
+        21: 56.4,
+        22: 59.4,
+        23: 62.5,
+        24: 65.5,
+        25: 68.8,
+        26: 71.6,
+        27: 74.5,
+        28: 77.4,
+        29: 80.1,
+        30: 82.7,
+        31: 85.2,
+        32: 87.4,
+        33: 89.5,
+        34: 91.4,
+        35: 93,
+        36: 94.5,
+        37: 95.7,
+        38: 96.7,
+        39: 97.6,
+        40: 98.2,
+        41: 98.8,
+        42: 99.2,
+        43: 99.4
+    }
+
+    if -47 <= renal_score <= 43:
+        return mortality_risk[renal_score]
+    else:
+        return np.nan
+
+
+
 # function to score albumin
 def score_albumin(albumin):
     if albumin < 25:  # end cases not accounted for yet like 0 or negative
@@ -44,7 +147,7 @@ def score_albumin(albumin):
         return 0
     else:
         return np.nan
-    # raise Exception("issue with calc_albumin defnintion for value", albumin)
+    # raise Exception("issue with calc_albumin definition for value", albumin)
 
 
 # function to calculate bmi
