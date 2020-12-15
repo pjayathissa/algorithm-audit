@@ -31,8 +31,8 @@ def validation(numeric_results_df):
     survival_probability_at_5yrs_audit_value = survival_score_audit_value.apply(cal.mortality_score_at_5yrs)
     validation_report.append(check_column(numeric_results_df['NHI_number'], 'Survival Probability at 5 yrs',
                                           numeric_results_df['Survival_Probability_at_5yrs'],
-                                          survival_probability_at_5yrs_audit_value.astype('float32'), 'Renal Transplant'
-                                          , numeric_results_df['date_completed']))
+                                          survival_probability_at_5yrs_audit_value.astype('float32'),
+                                          'Renal Transplant', numeric_results_df['date_completed']))
 
     # joining the results into a single data frame
     validation_report = pd.concat(validation_report)

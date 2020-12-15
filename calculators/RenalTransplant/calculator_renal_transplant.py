@@ -128,7 +128,6 @@ def mortality_score_at_5yrs(renal_score):
         return np.nan
 
 
-
 # function to score albumin
 def score_albumin(albumin):
     if albumin < 25:  # end cases not accounted for yet like 0 or negative
