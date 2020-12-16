@@ -123,7 +123,7 @@ def mortality_score_at_5yrs(renal_score):
     }
 
     if -47 <= renal_score <= 43:
-        return mortality_risk[renal_score]
+        return 100 - mortality_risk[renal_score]
     else:
         return np.nan
 
