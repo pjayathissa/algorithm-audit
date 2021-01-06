@@ -35,3 +35,11 @@ def convert_berg_outcome_numeric(berg_outcome):
                          None: 4}
 
     return berg_outcome_list[berg_outcome]
+
+
+# function to convert berg outcome to string values
+def convert_berg_outcome_to_string(berg_outcome_numeric):
+    berg_outcome_list = ["No aids", "Walking stick outdoors", "Walking stick indoors", "Walking frame",
+                         None]
+
+    return berg_outcome_list[int(berg_outcome_numeric)]
