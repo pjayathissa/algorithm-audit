@@ -31,10 +31,13 @@ def validation(numeric_results_df):
 
     # validate the berg outcome
     berg_outcome_audit_value = berg_score_audit_value.apply(cal.calculate)
-    validation_report.append(check_column(numeric_results_df['NHI_number'], 'Berg Balance outcome',
-                                          numeric_results_df['BergOutcome'].apply(cal.convert_berg_outcome_numeric),
-                                          berg_outcome_audit_value.astype('float32'),
-                                          'Berg Balance', numeric_results_df['date_completed']))
+    berg_outcome_df = check_column(numeric_results_df['NHI_number'], 'Berg Balance outcome',
+                                   numeric_results_df['BergOutcome'].apply(cal.convert_berg_outcome_numeric),
+                                   berg_outcome_audit_value.astype('float32'),
+                                   'Berg Balance', numeric_results_df['date_completed'])
+    berg_outcome_df['Submitted Value'] = berg_outcome_df['Submitted Value'].apply(cal.convert_berg_outcome_to_string)
+    berg_outcome_df['Audit Value'] = berg_outcome_df['Audit Value'].apply(cal.convert_berg_outcome_to_string)
+    validation_report.append(berg_outcome_df)
 
     validation_report = pd.concat(validation_report)
     return validation_report.dropna(subset=['Result'])
