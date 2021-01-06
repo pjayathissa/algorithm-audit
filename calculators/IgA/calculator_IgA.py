@@ -15,13 +15,13 @@ def calculate(egfr, systoic_bp, diastoic_bp, proteinuria, mesangial, endocapilla
 def linear_predictor(egfr, map, proteinuria, mesangial, endocapillary_hypercellilarity,
                      segmental_sclerosis, tubular_atrophy, age, rasb, immunosuppression):
     t1 = t2 = 0
-    if(tubular_atrophy == 0):
+    if tubular_atrophy == 0:
         t1 = 0
         t2 = 0
-    elif(tubular_atrophy == 1):
+    elif tubular_atrophy == 1:
         t1 = 1
         t2 = 0
-    elif(tubular_atrophy == 2):
+    elif tubular_atrophy == 2:
         t1 = 0
         t2 = 1
 
