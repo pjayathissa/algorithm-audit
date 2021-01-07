@@ -11,9 +11,8 @@ def validation(numeric_results_df):
                                                                        x['DVTTender'], x['DVTSwollen'], x['DVTCircum'],
                                                                        x['DVTOedema'], x['DVTCollateral'], x['DVTHist'],
                                                                        x['DVTAltDiag']), axis=1)
-    validation_report = check_column(numeric_results_df['NMPI'], 'DVT WELLS SCORE',
-                                          numeric_results_df['DVTWELLS'],
-                                          dvt_audit_value, 'DVT WELLS', numeric_results_df['TESTDATE'])
+    validation_report = check_column(numeric_results_df['NMPI'], 'DVT WELLS SCORE', numeric_results_df['DVTWELLS'],
+                                     dvt_audit_value, 'DVT WELLS', numeric_results_df['TESTDATE'])
 
     return validation_report.dropna(subset=['Result'])
 
