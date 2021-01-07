@@ -34,20 +34,7 @@ def query_data(filename, conn):
 
 # function to clean the data
 def clean_data(result_df):
-    column_list = ['DVTHist', 'DVTCircum', 'DVTMalig', 'DVTRisk', 'DVTTender', 'DVTAltDiag', 'DVTBed', 'DVTOedema',
-                   'DVTWELLS', 'DVTSwollen', 'DVTCollateral', 'DVTImmob']
-
-    dvt_data_list = []
-    for nmpi_num in list(result_df.NMPI.unique()):
-        for test_date in get_date(result_df, nmpi_num):
-            temp_list = [nmpi_num, test_date]
-            for col in column_list:
-                temp_list.append(search_data(result_df, nmpi_num, col, test_date).values[0])
-            dvt_data_list.append(temp_list)
-
-    column_list = ['NMPI', 'TESTDATE', 'DVTHist', 'DVTCircum', 'DVTMalig', 'DVTRisk', 'DVTTender', 'DVTAltDiag',
-                   'DVTBed', 'DVTOedema', 'DVTWELLS', 'DVTSwollen', 'DVTCollateral', 'DVTImmob']
-    final_df = pd.DataFrame(data=dvt_data_list, columns=column_list)
+    final_df = result_df.copy()
     final_df = final_df.replace('likely', True)
     final_df = final_df.replace('unlikely', False)
     final_df = final_df.replace('Yes', True)
