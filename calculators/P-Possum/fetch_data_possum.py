@@ -31,4 +31,10 @@ def query_data(filename, conn):
 
 # function to clean the data
 def clean_data(result_df):
-    return 0
+    numeric_results_df = result_df.copy()
+
+    numeric_cols = ['Urea', 'Sodium', 'Potassium', 'Operative_Severity_Score', 'Physiology_Score', 'WBC', 'Haemoglobin',
+                    'Predicted_Morbidity', 'Predicted_Mortality']
+    numeric_results_df[numeric_cols] = numeric_results_df[numeric_cols].apply(pd.to_numeric, downcast='float',
+                                                                              errors='ignore')
+    return numeric_results_df

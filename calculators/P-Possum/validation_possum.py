@@ -1,4 +1,4 @@
-# import calculator_demo as cal
+import calculator_possum as cal
 import pandas as pd
 import numpy as np
 import math
@@ -8,8 +8,46 @@ from datetime import datetime
 # main validation function
 def validation(numeric_results_df):
     validation_report = []
-    # call calculate function
-    # call check column function
+
+    # validate the physiological score
+    physiological_score_audit_value = numeric_results_df.apply(
+        lambda x: cal.cal_physiological_score(x['Age'], x['Cardiac'], x['Respiratory'], x['SBP'], x['Pulse'], x['GCS'],
+                                              x['Urea'], x['Sodium'], x['Potassium'], x['Haemoglobin'], x['WBC'],
+                                              x['ECG']), axis=1)
+    validation_report.append(check_column(numeric_results_df['NMPI'], 'Physiological Score',
+                                          numeric_results_df['Physiology_Score'],
+                                          physiological_score_audit_value.astype('float32'),
+                                          'P-Possum', numeric_results_df['TESTDATE']))
+    numeric_results_df['Physiology_Score_Audit_Value'] = physiological_score_audit_value
+
+    # validate the operative severity score
+    operative_score_audit_value = numeric_results_df.apply(
+        lambda x: cal.cal_operative_score(x['Operation_Severity'], x['Number_of_Procedures'], x['Operative_Blood_Loss'],
+                                          x['Peritoneal_Contamination'], x['Malignancy'], x['Urgency']), axis=1)
+    validation_report.append(check_column(numeric_results_df['NMPI'], 'Operative Severity Score',
+                                          numeric_results_df['Operative_Severity_Score'],
+                                          operative_score_audit_value.astype('float32'),
+                                          'P-Possum', numeric_results_df['TESTDATE']))
+    numeric_results_df['Operative_Severity_Score_Audit_Value'] = operative_score_audit_value
+
+    # validate mortality
+    mortality_audit_value = numeric_results_df.apply(
+        lambda x: cal.calculate_mortality(x['Physiology_Score_Audit_Value'], x['Operative_Severity_Score_Audit_Value']),
+        axis=1)
+    validation_report.append(check_column(numeric_results_df['NMPI'], 'Predicted Mortality',
+                                          numeric_results_df['Predicted_Mortality'],
+                                          mortality_audit_value.astype('float32'),
+                                          'P-Possum', numeric_results_df['TESTDATE']))
+
+    # validate morbidity
+    morbidity_audit_value = numeric_results_df.apply(
+        lambda x: cal.calculate_morbidity(x['Physiology_Score_Audit_Value'], x['Operative_Severity_Score_Audit_Value']),
+        axis=1)
+    validation_report.append(check_column(numeric_results_df['NMPI'], 'Predicted Morbidity',
+                                          numeric_results_df['Predicted_Morbidity'],
+                                          morbidity_audit_value.astype('float32'),
+                                          'P-Possum', numeric_results_df['TESTDATE']))
+
     validation_report = pd.concat(validation_report)
     return validation_report.dropna(subset=['Result'])
 
