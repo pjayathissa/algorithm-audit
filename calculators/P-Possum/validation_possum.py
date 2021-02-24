@@ -5,6 +5,8 @@ import math
 from datetime import datetime
 
 
+
+
 # main validation function
 def validation(numeric_results_df):
     validation_report = []
@@ -13,7 +15,7 @@ def validation(numeric_results_df):
     physiological_score_audit_value = numeric_results_df.apply(
         lambda x: cal.cal_physiological_score(x['Age'], x['Cardiac'], x['Respiratory'], x['SBP'], x['Pulse'], x['GCS'],
                                               x['Urea'], x['Sodium'], x['Potassium'], x['Haemoglobin'], x['WBC'],
-                                              x['ECG']), axis=1)
+                                              x['ECG'], x['NMPI']), axis=1)
     validation_report.append(check_column(numeric_results_df['NMPI'], 'Physiological Score',
                                           numeric_results_df['Physiology_Score'],
                                           physiological_score_audit_value.astype('float32'),

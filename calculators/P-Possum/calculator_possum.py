@@ -1,25 +1,29 @@
 import math
 
 
+
 def calculate_morbidity(physiological_score, operative_score):
 
-    x = -7.04 + (0.13 * physiological_score) + (0.16 * operative_score)
-    mortality_risk = 1 / (1 + math.exp(-1 * x))
+    # This is based on the POSSUM equation
+    x = -5.91 + (0.16 * physiological_score) + (0.19 * operative_score)
+    morbidity_risk = 1 / (1 + math.exp(-1 * x))
 
-    return mortality_risk * 100
+    return round(morbidity_risk * 100,1)
 
 
 def calculate_mortality(physiological_score, operative_score):
 
+    # This is based on the P-POSSUM equation
     x = -9.065 + (0.1692 * physiological_score) + (0.155 * operative_score)
-    morbidity_risk = 1 / (1 + math.exp(-1 * x))
+    mortality_risk = 1 / (1 + math.exp(-1 * x))
 
-    return morbidity_risk * 100
+    return round(mortality_risk * 100,1)
 
 
 def cal_physiological_score(age, cardiac_signs, respiratory_signs, systolic_bp, pulse, glasgow_coma_score,
-                            urea_nitrogen, sodium, potassium, haemoglobin, wcc, electrocardiogram):
+                            urea_nitrogen, sodium, potassium, haemoglobin, wcc, electrocardiogram, NMPI):
     ps = 0
+
 
     if age == '&#60; 61':
         ps += 1
@@ -27,6 +31,8 @@ def cal_physiological_score(age, cardiac_signs, respiratory_signs, systolic_bp, 
         ps += 2
     elif age == '&#62; 70':
         ps += 4
+    else:
+        print('age error',age, NMPI)
 
     if cardiac_signs == 'No failure, normal CXR':
         ps += 1
@@ -36,6 +42,8 @@ def cal_physiological_score(age, cardiac_signs, respiratory_signs, systolic_bp, 
         ps += 4
     elif cardiac_signs == 'Raised JVP, cardiomegaly':
         ps += 8
+    else:
+        print('cardiac signs error',cardiac_signs, NMPI)
 
     if respiratory_signs == 'No dyspnoea':
         ps += 1
@@ -45,6 +53,8 @@ def cal_physiological_score(age, cardiac_signs, respiratory_signs, systolic_bp, 
         ps += 4
     elif respiratory_signs == 'Dyspnoea at rest, pulmonary fibrosis or consolidation on CXR':
         ps += 8
+    else:
+        print('resp error',respiratory_signs, NMPI)
 
     if systolic_bp == '110 - 130':
         ps += 1
@@ -54,6 +64,8 @@ def cal_physiological_score(age, cardiac_signs, respiratory_signs, systolic_bp, 
         ps += 4
     elif systolic_bp == '&#60; 90':
         ps += 8
+    else:
+        print('systolic bp error',systolic_bp, NMPI)
 
     if pulse == '50 - 80':
         ps += 1
@@ -63,33 +75,41 @@ def cal_physiological_score(age, cardiac_signs, respiratory_signs, systolic_bp, 
         ps += 4
     elif pulse == '&#62; 120' or pulse == '&#60; 40':
         ps += 8
+    else:
+        print('pulse error', pulse, NMPI)
 
     if urea_nitrogen < 7.5:
         ps += 1
-    elif 7.6 <= urea_nitrogen <= 10:
+    elif 7.5 <= urea_nitrogen < 10:
         ps += 2
-    elif 10.1 <= urea_nitrogen <= 15:
+    elif 10 <= urea_nitrogen < 15:
         ps += 4
-    elif urea_nitrogen >= 15.1:
+    elif 15 <= urea_nitrogen:
         ps += 8
+    else:
+        print('urea nitrogen error', urea_nitrogen, NMPI)
 
-    if sodium >= 136:
+    if sodium > 135:
         ps += 1
-    elif 131 <= sodium <= 135:
+    elif 130 < sodium <= 135:
         ps += 2
     elif 126 <= sodium <= 130:
         ps += 4
-    elif sodium <= 125:
+    elif sodium < 126:
         ps += 8
+    else:
+        print('sodium error', sodium, NMPI)
 
-    if 3.5 <= potassium <= 5:
+    if 3.4 < potassium < 5.1:
         ps += 1
-    elif 3.2 <= potassium <= 3.4 or 5.1 <= potassium <= 5.3:
+    elif 3.1 < potassium <= 3.4 or 5.1 <= potassium < 5.4:
         ps += 2
     elif 2.9 <= potassium <= 3.1 or 5.4 <= potassium <= 5.9:
         ps += 4
-    elif potassium <= 2.8 or potassium >= 6:
+    elif potassium < 2.9 or potassium > 5.9:
         ps += 8
+    else:
+        print('potassium error', potassium, NMPI)
 
     if glasgow_coma_score == '15':
         ps += 1
@@ -99,13 +119,17 @@ def cal_physiological_score(age, cardiac_signs, respiratory_signs, systolic_bp, 
         ps += 4
     elif glasgow_coma_score == '&#60; 9':
         ps += 8
+    else:
+        print('glassgow coma score error',glasgow_coma_score, NMPI)
 
-    if 4 <= wcc <= 10:
+    if 4 < wcc < 10.1:
         ps += 1
-    elif 10.1 <= wcc <= 20 or 3.1 <= wcc <= 3.9:
+    elif 10.1 <= wcc <= 20 or 3 <= wcc <= 4:
         ps += 2
-    elif wcc >= 20.1 or wcc <= 3:
+    elif wcc > 20 or wcc < 3:
         ps += 4
+    else:
+        print('wcc error', wcc, NMPI)
 
     if electrocardiogram == 'Normal':
         ps += 1
@@ -113,15 +137,19 @@ def cal_physiological_score(age, cardiac_signs, respiratory_signs, systolic_bp, 
         ps += 4
     elif electrocardiogram == 'Other abnormal rhythmn, &#62;4&#47;min ectopics, Q waves, ST&#47;T changes':
         ps += 8
+    else:
+        print('ecg error',electrocardiogram, NMPI)
 
-    if 130 <= haemoglobin <= 160:
+    if 129 < haemoglobin <= 160:
         ps += 1
-    elif 115 <= haemoglobin <= 129 or 161 <= haemoglobin <= 170:
+    elif 114 < haemoglobin <= 129 or 160 < haemoglobin <= 170:
         ps += 2
-    elif 100 <= haemoglobin <= 114 or 171 <= haemoglobin <= 180:
+    elif 100 <= haemoglobin <= 114 or 170 < haemoglobin <= 180:
         ps += 4
-    elif haemoglobin <= 99 or haemoglobin >= 181:
+    elif haemoglobin < 100 or haemoglobin > 180:
         ps += 8
+    else:
+        print('haemoglobin error', haemoglobin, NMPI)
 
     return ps
 
